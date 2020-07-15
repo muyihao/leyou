@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>leyou</artifactId>
+        <groupId>com.leyou.parent</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.leyou.search</groupId>
+    <artifactId>leyou-search</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
+    <!--要调用界面接口，所以会用到web-->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+<!--调用其他接口，用到feign-->
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-openfeign</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+    </dependency>
+    <!--用到自己的pojo对象-->
+    <dependency>
+        <groupId>com.leyou.item</groupId>
+        <artifactId>leyou-item-interface</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <!--用到自己写的分页对象-->
+    <dependency>
+        <groupId>com.leyou.common</groupId>
+        <artifactId>leyou-common</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <!--测试用例-->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+    </dependency>
+</dependencies>
+
+</project>
