@@ -1,6 +1,5 @@
 package com.leyou.item.service;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.leyou.common.pojo.PageResult;
@@ -73,5 +72,9 @@ public class BrandService {
     public List<Brand> queryBrandsByCid(Long cid) {
       List<Brand>brands=  this.brandMapper.selectBrandByCid(cid);
         return brands;
+    }
+
+    public Brand queryBrandById(Long id) {
+        return this.brandMapper.selectByPrimaryKey(id);
     }
 }

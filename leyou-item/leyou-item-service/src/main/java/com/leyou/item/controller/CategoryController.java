@@ -1,11 +1,8 @@
 package com.leyou.item.controller;
 
-import com.leyou.item.mapper.CategoryMapper;
 import com.leyou.item.pojo.Category;
 import com.leyou.item.service.CategoryService;
-import com.netflix.ribbon.proxy.annotation.Http;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -60,5 +57,14 @@ public class CategoryController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(list);
+    }
+    @GetMapping("names")
+    public ResponseEntity<List<String>> queryNamesByIds(@RequestParam("ids")List<Long> ids){
+
+        List<String> names = this.categoryService.queryNamesByIds(ids);
+        if (CollectionUtils.isEmpty(names)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(names);
     }
 }
