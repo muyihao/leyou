@@ -12,3 +12,4 @@ zuul:
   prefix: /api
   routes:
     item-service: /item/** # 商品微服务的映射路径
+    search-service: /search/** # 搜索微服务的映射路径

@@ -1,0 +1,21 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: search-service
+  jackson:
+    default-property-inclusion: non_null # 配置json处理时忽略空值,值为空的属性就不显示了
+
+  data:
+    elasticsearch:
+      cluster-name: elasticsearch
+      cluster-nodes: 192.168.1.6:9300
+  main:
+    allow-bean-definition-overriding: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+  instance:
+    lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期
+    lease-renewal-interval-in-seconds: 5 # 心跳时间
