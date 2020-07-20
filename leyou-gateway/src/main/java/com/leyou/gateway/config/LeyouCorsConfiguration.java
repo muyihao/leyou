@@ -16,7 +16,9 @@ public class LeyouCorsConfiguration {
         corsConfiguration.addAllowedMethod("*");//3) 允许的请求方式
         corsConfiguration.addAllowedHeader("*");  // 4）允许的头信息
         corsConfiguration.addAllowedOrigin("http://manage.leyou.com");// 1）允许的域,注意要写上协议http
+        corsConfiguration.addAllowedOrigin("http://127.0.0.1:9001");// 1）后台网站对应的ip地址
         corsConfiguration.addAllowedOrigin("http://www.leyou.com");// 1）允许的域,注意要写上协议http
+        corsConfiguration.addAllowedOrigin("http://127.0.0.1:9002");// 1）门户网站对应的ip地址
         corsConfiguration.setAllowCredentials(true);//2) 是否发送Cookie信息
         //2初始化cors配置源对象
         UrlBasedCorsConfigurationSource corsConfigurationSource = new UrlBasedCorsConfigurationSource();

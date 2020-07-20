@@ -21,7 +21,7 @@ public class CategoryClientTest {
 
     @Test
     public void testQueryCategories() {
-        List<String> names = this.categoryClient.queryNameByIds(Arrays.asList(1L, 2L, 3L));
+        List<String> names = this.categoryClient.queryNamesByIds(Arrays.asList(1L, 2L, 3L));
         names.forEach(System.out::println);
     }
 }
