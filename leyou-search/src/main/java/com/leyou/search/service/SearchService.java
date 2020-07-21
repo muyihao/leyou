@@ -13,6 +13,7 @@ import com.leyou.search.pojo.SearchResult;
 import com.leyou.search.repository.GoodsRepository;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -52,6 +53,12 @@ public class SearchService {
     //json工具
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    /**
+     * 根据spu生成用于搜索用的goods对象集合（goods集合用于导入elasticsearch）
+     * @param spu
+     * @return
+     * @throws IOException
+     */
     public Goods buildGoods(Spu spu) throws IOException {
         Goods goods = new Goods();
         //根据分类id查询分类名称
@@ -119,6 +126,12 @@ public class SearchService {
         return goods;
     }
 
+    /**
+     * 该方法用于给数字类型的过滤条件设置分段区间
+     * @param value
+     * @param p
+     * @return
+     */
     private String chooseSegment(String value, SpecParam p) {
         double val = NumberUtils.toDouble(value);
         String result = "其它";
@@ -146,6 +159,11 @@ public class SearchService {
         return result;
     }
 
+    /**
+     * 根据搜素条件搜索es，返回一个特定的搜索结果
+     * @param request：封装了查询参数，参数值自动封装
+     * @return
+     */
     public SearchResult search(SearchRequest request) {
         // 判断是否有搜索条件，如果没有，直接返回null。不允许搜索全部商品
         String key = request.getKey();
@@ -156,7 +174,8 @@ public class SearchService {
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 
         // 1、对key进行全文检索查询
-        QueryBuilder basicQuery = QueryBuilders.matchQuery("all", key).operator(Operator.AND);
+       /* QueryBuilder basicQuery = QueryBuilders.matchQuery("all", key).operator(Operator.AND);*/
+        BoolQueryBuilder basicQuery=buildBoolQueryBuilder(request);
         queryBuilder.withQuery(basicQuery);
         // 2、通过sourceFilter设置返回的结果字段,我们只需要id、skus、subTitle
         queryBuilder.withSourceFilter(new FetchSourceFilter(
@@ -190,12 +209,7 @@ public class SearchService {
         if (!CollectionUtils.isEmpty(categories) && categories.size() == 1) {
     specs = getParamsAggResult((Long) categories.get(0).get("id"), basicQuery);
         }
-        // 封装结果并返回
-      /*  PageResult<Goods> goodsPageResult = new PageResult<>();
-        goodsPageResult.setItems(goodsPage.getContent());
-        goodsPageResult.setTotal(goodsPage.getTotalElements());
-        goodsPageResult.setTotalPage((long) goodsPage.getTotalPages());
-        return goodsPageResult;*/
+
         //6. 封装结果并返回
         Long total = goodsPage.getTotalElements();
         Integer totalPage = (total.intValue() + size - 1) / size;
@@ -204,10 +218,44 @@ public class SearchService {
     }
 
     /**
-     * 根据分类以及基本查询做其余参数的聚合
+     * 构建布尔查询
+     * @param request
+     * @return
+     */
+    private BoolQueryBuilder buildBoolQueryBuilder(SearchRequest request) {
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        // 添加基本查询条件
+        boolQueryBuilder.must(QueryBuilders.matchQuery("all", request.getKey()).operator(Operator.AND));
+
+        //获取用户选择的过滤条件
+        if (CollectionUtils.isEmpty(request.getFilter())){
+            return boolQueryBuilder;
+        }
+
+        for (Map.Entry<String, String> entry : request.getFilter().entrySet()) {
+
+            String key = entry.getKey();
+            // 如果过滤条件是“品牌”, 过滤的字段名：brandId
+            if (StringUtils.equals("品牌", key)) {
+                key = "brandId";
+            } else if (StringUtils.equals("分类", key)) {
+                // 如果是“分类”，过滤字段名：cid3
+                key = "cid3";
+            } else {
+                // 如果是规格参数名，过滤字段名：specs.key.keyword
+                key = "specs." + key + ".keyword";
+            }
+            boolQueryBuilder.filter(QueryBuilders.termQuery(key, entry.getValue()));
+        }
+        return boolQueryBuilder;
+    }
+
+    /**
+     * 根据分类以及基本查询做过滤条件的聚合，每个聚合结果用一个map存储，存储两队键值对，分别为名称的键值对和option的键值对，最后返回各聚合结果map的list集合
      *
-     * @param id
-     * @param basicQuery
+     * @param id 分类id
+     * @param basicQuery ：基本的查询条件
      * @return
      */
     private List<Map<String, Object>> getParamsAggResult(Long id, QueryBuilder basicQuery) {

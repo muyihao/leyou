@@ -58,6 +58,12 @@ public class CategoryController {
         }
         return ResponseEntity.ok(list);
     }
+
+    /**
+     * 根据多个id查询多个类别并返回名称集合
+     * @param ids
+     * @return
+     */
     @GetMapping("names")
     public ResponseEntity<List<String>> queryNamesByIds(@RequestParam("ids")List<Long> ids){
 
@@ -66,5 +72,19 @@ public class CategoryController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(names);
+    }
+
+    /**
+     *根据3级分类id，查询1~3级的分类
+     * @param id
+     * @return
+     */
+    @GetMapping("all/level")
+    public ResponseEntity<List<Category>> queryAllByCid3(@RequestParam("id") Long id){
+        List<Category> list = this.categoryService.queryAllByCid3(id);
+        if (list == null || list.size() < 1) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(list);
     }
 }

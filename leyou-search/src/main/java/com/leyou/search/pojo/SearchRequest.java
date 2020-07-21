@@ -1,17 +1,20 @@
 package com.leyou.search.pojo;
 
+import java.util.Map;
+
 /**
  * 这个对象用于封装查询的条件信息，而PageResult对象用于封装查询的结果信息
+ * 这里的字段名应该和传递过来的参数名一样，否则无法自动封装
  */
 public class SearchRequest {
     private String key;// 搜索条件
-
     private Integer page;// 当前页
     private String sortBy;//排序字段
     private Boolean descending;//是否排序
-
+    private Map<String,String> filter;//过滤条件
     private static final Integer DEFAULT_SIZE = 20;// 每页大小，不从页面接收，而是固定大小
     private static final Integer DEFAULT_PAGE = 1;// 默认页
+
 
     public String getKey() {
         return key;
@@ -51,5 +54,13 @@ public class SearchRequest {
 
     public void setDescending(Boolean descending) {
         this.descending = descending;
+    }
+
+    public Map<String, String> getFilter() {
+        return filter;
+    }
+
+    public void setFilter(Map<String, String> filter) {
+        this.filter = filter;
     }
 }
