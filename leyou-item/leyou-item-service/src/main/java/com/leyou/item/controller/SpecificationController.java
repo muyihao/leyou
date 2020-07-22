@@ -21,7 +21,11 @@ public class SpecificationController {
     @Autowired
     private SpecificationService specificationService;
 
-
+    /**
+     * 根据分类cid,查询该列别下的组
+     * @param cid
+     * @return
+     */
     @GetMapping("groups/{cid}")
     public ResponseEntity<List<SpecGroup>> queryGroupsByCid(@PathVariable("cid") long cid) {
         List<SpecGroup> specGroups = this.specificationService.queryGroupsByCid(cid);
@@ -40,8 +44,6 @@ public class SpecificationController {
      * @param searching
      * @return
      */
-
-
     @GetMapping("params")
     public ResponseEntity<List<SpecParam>> queryParams(@RequestParam(value = "gid", required = false) Long gid, @RequestParam(value = "cid", required = false) Long cid,
                                                        @RequestParam(value = "generic", required = false) Boolean generic, @RequestParam(value = "searching", required = false) Boolean searching) {
@@ -51,5 +53,21 @@ public class SpecificationController {
         }
         return ResponseEntity.ok(specParams);
     }
+
+    /**
+     * 根据类别查询所有分组，以及每个分组下的具体参数
+     * @param cid
+     * @return
+     */
+    @GetMapping("groups/params/{cid}")
+    public ResponseEntity<List<SpecGroup>> queryGroupsWithParam(@PathVariable("cid") Long cid) {
+    List<SpecGroup> list = this.specificationService.queryGroupsWithParam(cid);
+    if(list == null || list.size() == 0){
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.ok(list);
+    }
+
+
 
 }

@@ -13,7 +13,7 @@ public class SpecGroup {
     private Long cid;
 
     private String name;
-
+/*@transient 就是在给某个javabean上需要添加个属性，但是这个属性你又不希望给存到数据库中去，仅仅是做个临时变量，用一下。不修改已经存在数据库的数据的数据结构。*/
     @Transient
     private List<SpecParam> params;
 
@@ -49,5 +49,5 @@ public class SpecGroup {
         this.params = params;
     }
 
-    // getter和setter省略
+
 }

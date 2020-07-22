@@ -7,14 +7,11 @@ import com.leyou.item.bo.SpuBo;
 import com.leyou.item.mapper.*;
 import com.leyou.item.pojo.Sku;
 import com.leyou.item.pojo.Spu;
-
 import com.leyou.item.pojo.SpuDetail;
 import com.leyou.item.pojo.Stock;
 import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.voms.VOMSAttribute;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -200,6 +197,15 @@ public class GoodsService {
         this.spuMapper.updateByPrimaryKeySelective(spuBo);//注意是selective，表示属性为空的就不会写入到sql语句中
         //更新spu详情
         this.spuDetailMapper.updateByPrimaryKey(spuBo.getSpuDetail());
+
+    }
+    /**
+     * 根据spu的id查询spu
+     * @param id
+     * @return
+     */
+    public Spu querySpuById(Long id) {
+        return this.spuMapper.selectByPrimaryKey(id);
 
     }
 }

@@ -1,0 +1,14 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: goods-web
+  thymeleaf:
+    cache: false # 关闭thymeleaf的缓存，避免开发时刷新失败
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+    instance:
+      lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期
+      lease-renewal-interval-in-seconds: 5 # 心跳时间
