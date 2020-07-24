@@ -5,6 +5,13 @@ spring:
     name: goods-web
   thymeleaf:
     cache: false # 关闭thymeleaf的缓存，避免开发时刷新失败
+
+  rabbitmq:
+    host: 127.0.0.1
+    virtual-host: /leyou
+    username: leyou
+    password: leyou
+    # 端口默认的就行
 eureka:
   client:
     service-url:

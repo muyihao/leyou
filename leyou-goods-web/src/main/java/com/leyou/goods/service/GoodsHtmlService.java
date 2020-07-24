@@ -1,4 +1,4 @@
-package com.leyou.service;
+package com.leyou.goods.service;
 
 import com.leyou.common.utils.ThreadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +56,10 @@ public class GoodsHtmlService {
                 createHtml(spuId);
             }
         });*/
+    }
+
+    public void deleteHtml(Long id) {
+        File file = new File("D:\\Develop\\nginx-1.14.0\\html\\item\\" + id + ".html");
+        file.deleteOnExit();
     }
 }

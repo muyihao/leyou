@@ -5,6 +5,11 @@ spring:
     name: search-service
   jackson:
     default-property-inclusion: non_null # 配置json处理时忽略空值,值为空的属性就不显示了
+  rabbitmq:
+    host: localhost # 127.0.0.1,默认就是本地域名
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
 
   data:
     elasticsearch:
@@ -20,5 +25,5 @@ eureka:
 #  eureka:
 #    enabled: true
   instance:
-    lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期
-    lease-renewal-interval-in-seconds: 5 # 心跳时间
+                                                   lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期
+                                                   lease-renewal-interval-in-seconds: 5 # 心跳时间

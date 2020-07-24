@@ -10,7 +10,15 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
   main:
     allow-bean-definition-overriding: true
-
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: /leyou
+    username: leyou
+    password: leyou
+    template:
+      exchange: LEYOU.ITEM.EXCHANGE
+    publisher-confirms: true
 
 eureka:
   client:

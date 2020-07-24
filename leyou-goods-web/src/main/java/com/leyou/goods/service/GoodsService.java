@@ -1,4 +1,4 @@
-package com.leyou.service;
+package com.leyou.goods.service;
 
 import com.leyou.goods.client.BrandClient;
 import com.leyou.goods.client.CategoryClient;

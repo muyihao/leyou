@@ -10,6 +10,8 @@ import com.leyou.item.pojo.Spu;
 import com.leyou.item.pojo.SpuDetail;
 import com.leyou.item.pojo.Stock;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,8 @@ public class GoodsService {
     private StockMapper stockMapper;
     @Autowired
     private BrandMapper brandMapper;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     public PageResult<SpuBo> querySpuBoByPage(String key, Boolean saleable, Integer page, Integer rows) {
         Example example = new Example(Spu.class);
@@ -94,30 +98,20 @@ public class GoodsService {
         SpuDetail spuDetail = spuBo.getSpuDetail();
         spuDetail.setSpuId(spuBo.getId());
         this.spuDetailMapper.insert(spuDetail);
+        //再新增sku,将增加sku部分抽取出来放下面
         saveSkuAndStock(spuBo);
-        //再新增sku
-       /* List<Sku> skus = spuBo.getSkus();
-        for (Sku sku : skus) {
-            this.skuMapper.insert(sku);
-        }*/
-
-   /*
-   抽取！
-     spuBo.getSkus().forEach(sku -> {
-           //新增sku,需要注意这里sku有些属性为空值
-           sku.setId(null);
-           sku.setSpuId(spuBo.getId());
-           sku.setCreateTime(new Date());
-           sku.setLastUpdateTime(sku.getCreateTime());
-           this.skuMapper.insert(sku);
-           //新增stock
-           Stock stock = new Stock();
-           stock.setSkuId(sku.getId());
-           stock.setStock(sku.getStock());
-           this.stockMapper.insertSelective(stock);
-       });*/
+        //发送消息队列，将新增商品的id传到消息中
+        sendMsg("insert",spuBo.getId());
 
 
+    }
+
+    private void sendMsg(String type,Long id) {
+        try {
+            this.amqpTemplate.convertAndSend("item."+type, id);
+        } catch (AmqpException e) {
+            e.printStackTrace();
+        }
     }
 
     private void saveSkuAndStock(SpuBo spuBo) {
@@ -197,10 +191,14 @@ public class GoodsService {
         this.spuMapper.updateByPrimaryKeySelective(spuBo);//注意是selective，表示属性为空的就不会写入到sql语句中
         //更新spu详情
         this.spuDetailMapper.updateByPrimaryKey(spuBo.getSpuDetail());
+        //发送消息
+        sendMsg("update",spuBo.getId());
 
     }
+
     /**
      * 根据spu的id查询spu
+     *
      * @param id
      * @return
      */

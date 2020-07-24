@@ -314,6 +314,7 @@ public class SearchService {
         return terms.getBuckets().stream().map(bucket -> this.brandClient.queryBrandById(bucket.getKeyAsNumber().longValue())).collect(Collectors.toList());
     }
 
+
     /**
      * 解析分类的聚合结果集
      *
@@ -334,5 +335,30 @@ public class SearchService {
 
 
     }
+
+
+    /**
+     * 根据传来的spuId删除该商品索引
+     * @param id
+     * @throws IOException
+     */
+    public void save(Long id) throws IOException {
+        Spu spu = this.goodsClient.querySpuById(id);
+        // 构建商品
+        Goods goods = this.buildGoods(spu);
+        // 保存数据到索引库
+        this.goodsRepository.save(goods);
+        }
+
+
+
+    /**
+     * 根据spuId删除索引
+     * @param id
+     */
+    public void delete(Long id) {
+        this.goodsRepository.deleteById(id);
+    }
+
 
 }
